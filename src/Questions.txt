@@ -1,0 +1,211 @@
+1. What is a Stream in Java?
+ Streams are not data structures; they simply access data from data structures like collections, arrays.
+theese are used to process the data by using the methods we can transform the data.
+public class StreamExample {
+    public static void main(String[] args) {
+        List<String> names = Arrays.asList("John", "Jane", "Jack");
+        names.stream().forEach(System.out::println);
+    }
+}
+------------------------------------------------------------------------
+2. Difference between Stream and Collection in Java?
+Collections are in-memory data structures that hold all the data elements,
+whereas Streams are abstractions for processing sequences of elements that can be computed on demand.
+
+public class CollectionVsStream {
+    public static void main(String[] args) {
+        // Collection
+        List<String> names = Arrays.asList("John", "Jane", "Jack");
+        System.out.println(names);  // Output: [John, Jane, Jack]
+
+        // Stream
+        names.stream().forEach(System.out::println);  // Output: John Jane Jack
+    }
+}
+
+-----------------------------------------
+3. Explain Intermediate and Terminal Operations in Streams.
+Intermediate operations return a new Stream and are lazy, e.g., filter(), map().
+Terminal operations produce a result or a side-effect, e.g., collect(), forEach(), reduce().
+
+public class StreamOperations {
+    public static void main(String[] args) {
+        List<String> names = Arrays.asList("John", "Jane", "Jack", "Doe", "Jill");
+
+        // Intermediate operation: filter
+        List<String> filteredNames = names.stream()
+                                          .filter(name -> name.startsWith("J"))
+                                          .collect(Collectors.toList());
+
+        // Terminal operation: forEach
+        filteredNames.forEach(System.out::println);  // Output: John Jane Jack Jill
+    }
+}
+------------------------------------
+4. What are some common Intermediate Operations?
+filter()
+map()
+flatMap()
+sorted()
+distinct()
+limit()
+skip()
+public class IntermediateOperations {
+    public static void main(String[] args) {
+        List<String> names = Arrays.asList("John", "Jane", "Jack", "Doe", "Jill", "Doe");
+
+        // distinct() and sorted() intermediate operations
+        List<String> distinctSortedNames = names.stream()
+                                                .distinct()
+                                                .sorted()
+                                                .collect(Collectors.toList());
+
+        System.out.println(distinctSortedNames);  // Output: [Doe, Jack, Jane, Jill, John]
+    }
+}
+------------------------------------------
+5. What are some common Terminal Operations?
+collect()
+forEach()
+reduce()
+toArray()
+min()
+max()
+count()
+anyMatch()
+allMatch()
+noneMatch()
+Example:
+
+public class TerminalOperations {
+    public static void main(String[] args) {
+        List<String> names = Arrays.asList("John", "Jane", "Jack", "Doe", "Jill");
+
+        // count() terminal operation
+        long count = names.stream().count();
+        System.out.println(count);  // Output: 5
+    }
+}
+--------------------------------------------------------
+6. What is the use of the collect() method?
+The collect() method is used to accumulate elements of the stream into a collection or another result type, using a Collector.
+
+
+public class CollectExample {
+    public static void main(String[] args) {
+        List<String> names = Arrays.asList("John", "Jane", "Jack", "Doe", "Jill");
+
+        // Collect names starting with 'J' into a list
+        List<String> filteredNames = names.stream()
+                                          .filter(name -> name.startsWith("J"))
+                                          .collect(Collectors.toList());
+
+        System.out.println(filteredNames);  // Output: [John, Jane, Jack, Jill]
+    }
+}
+------------------------------------------------
+7. What is the difference between map() and flatMap()?
+map(): Applies a function to each element and returns a stream of the results.
+flatMap(): Applies a function that returns a stream for each element and flattens the result into a single stream.
+
+public class MapVsFlatMap {
+    public static void main(String[] args) {
+        List<String> names = Arrays.asList("John", "Jane", "Jack");
+
+        // map() example
+        List<Integer> nameLengths = names.stream()
+                                         .map(String::length)
+                                         .collect(Collectors.toList());
+        System.out.println(nameLengths);  // Output: [4, 4, 4]
+
+        // flatMap() example
+        List<List<String>> nestedList = Arrays.asList(
+            Arrays.asList("John", "Jane"),
+            Arrays.asList("Jack", "Doe")
+        );
+        List<String> flatList = nestedList.stream()
+                                          .flatMap(List::stream)
+                                          .collect(Collectors.toList());
+        System.out.println(flatList);  // Output: [John, Jane, Jack, Doe]
+    }
+}
+--------------------------------------------------
+8. How can you achieve parallel processing using Streams?
+By using the parallelStream() method or parallel() method on a Stream, which allows parallel processing of data to take advantage of multiple processors.
+
+public class ParallelStreamExample {
+    public static void main(String[] args) {
+        List<String> names = Arrays.asList("John", "Jane", "Jack", "Doe", "Jill");
+
+        // Using parallelStream()
+        names.parallelStream().forEach(System.out::println);
+    }
+}
+------------------------------------------
+9. What is the difference between findFirst() and findAny()?
+findFirst(): Returns the first element of the stream.
+findAny(): May return any element from the stream (useful in parallel processing).
+
+public class FindExample {
+    public static void main(String[] args) {
+        List<String> names = Arrays.asList("John", "Jane", "Jack", "Doe", "Jill");
+
+        // findFirst() example
+        Optional<String> first = names.stream().findFirst();
+        first.ifPresent(System.out::println);  // Output: John
+
+        // findAny() example
+        Optional<String> any = names.parallelStream().findAny();
+        any.ifPresent(System.out::println);  // Output: Any element (e.g., Jack)
+    }
+}
+-----------------------------------------------
+10. What is the Optional class, and how is it used with Streams?
+The Optional class is a container object used to contain not-null objects.
+Optional is used to represent a value that may or may not be present, preventing null checks and NullPointerException.
+
+public class OptionalExample {
+    public static void main(String[] args) {
+        List<String> names = Arrays.asList("John", "Jane", "Jack", "Doe", "Jill");
+
+        // Using Optional with Streams
+        Optional<String> name = names.stream().filter(n -> n.equals("Jane")).findFirst();
+        name.ifPresent(System.out::println);  // Output: Jane
+    }
+}
+------------------------------------------------
+11. Can you give an example of using reduce() in Streams?
+
+public class ReduceExample {
+    public static void main(String[] args) {
+        List<Integer> numbers = Arrays.asList(1, 2, 3, 4, 5);
+
+        // Using reduce() to sum elements
+        int sum = numbers.stream()
+                         .reduce(0, Integer::sum);
+        System.out.println(sum);  // Output: 15
+    }
+}
+----------------------------------------------------------
+12. What are Collectors in Java Streams?
+Collectors are utility classes that provide various methods to perform reduction operations on elements of a stream,
+such as toList(), toSet(), toMap(), joining(), groupingBy(), partitioningBy(), etc.
+
+public class CollectorsExample {
+    public static void main(String[] args) {
+        List<String> names = Arrays.asList("John", "Jane", "Jack", "Doe", "Jill", "John");
+
+        // Using Collectors to group names by their length
+        Map<Integer, List<String>> groupedByLength = names.stream()
+                                                          .collect(Collectors.groupingBy(String::length));
+
+        System.out.println(groupedByLength);
+        // Output: {3=[Doe], 4=[John, Jane, Jack, Jill, John]}
+    }
+}
+
+
+
+
+
+
